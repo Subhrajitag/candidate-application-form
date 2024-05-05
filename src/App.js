@@ -1,23 +1,51 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import Filter from "./components/Filter";
+import JobCard from "./components/JobCard";
 
 function App() {
+  const [jobs, setJobs] = useState([]);
+  const [offset, setOffset] = useState(0);
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    limit: 10,
+    offset: offset,
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  const fetchJobs = async () => {
+    try {
+      const response = await fetch(
+        "https://api.weekday.technology/adhoc/getSampleJdJSON",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          setJobs((prevJobs) => [...prevJobs, ...result.jdList]);
+        })
+        .catch((error) => console.log(error));
+    } catch (error) {
+      console.error("Error fetching job listings:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobs();
+  }, [offset]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {/* <Filter/> */}
+      {console.log(jobs)}
+      {/* {jobs && jobs?.map((job, index) => <JobCard job={job} key={index} />)} */}
     </div>
   );
 }
