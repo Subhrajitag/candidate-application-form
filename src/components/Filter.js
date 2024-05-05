@@ -17,6 +17,9 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
     borderRadius: "8px",
   },
+  role: {
+    textTransform: "capitalize",
+  },
 }));
 
 const Filter = ({ filterJobs }) => {
@@ -29,7 +32,6 @@ const Filter = ({ filterJobs }) => {
     techStack: [],
     jobRole: [],
     minJdSalary: "",
-    minExperience: ""
   });
 
   const handleChange = (e) => {
@@ -38,7 +40,7 @@ const Filter = ({ filterJobs }) => {
       ...prevFilters,
       [name]: value,
     }));
-    filterJobs(filters); // Filter jobs immediately on change
+    filterJobs({ ...filters, [name]: value }); // Filter jobs immediately on change
   };
 
   return (
@@ -89,6 +91,9 @@ const Filter = ({ filterJobs }) => {
               value={filters.techStack}
               onChange={handleChange}
             >
+              <MenuItem value="">
+                <em>Select Tech Stack</em>
+              </MenuItem>
               {[
                 "HTML/CSS",
                 "JavaScript",
@@ -121,7 +126,7 @@ const Filter = ({ filterJobs }) => {
             >
               {["frontend", "backend", "ios", "android", "tech lead"].map(
                 (role) => (
-                  <MenuItem key={role} value={role}>
+                  <MenuItem key={role} value={role} className={classes.role}>
                     {role}
                   </MenuItem>
                 )
@@ -139,6 +144,9 @@ const Filter = ({ filterJobs }) => {
               value={filters.minJdSalary}
               onChange={handleChange}
             >
+                 <MenuItem value="">
+                <em>Select Min Base Pay</em>
+              </MenuItem>
               {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((num) => (
                 <MenuItem key={num} value={num}>
                   {num} USD
@@ -153,8 +161,8 @@ const Filter = ({ filterJobs }) => {
             <Select
               labelId="min-exp-label"
               id="min-exp"
-              name="minExperience"
-              value={filters.minExperience}
+              name="minExp"
+              value={filters.minExp}
               onChange={handleChange}
             >
               <MenuItem value="">

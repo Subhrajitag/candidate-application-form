@@ -54,7 +54,8 @@ function App() {
         .then((response) => response.json())
         .then((result) => {
           setJobs((prevJobs) => [...prevJobs, ...result.jdList]);
-          setFilteredJobs((prevJobs) => [...prevJobs, ...result.jdList]); // Initialize filtered jobs with all jobs
+          // Initialize filtered jobs with all jobs
+          setFilteredJobs((prevJobs) => [...prevJobs, ...result.jdList]);
           setLoading(false);
         })
         .catch((error) => {
@@ -80,36 +81,43 @@ function App() {
   const filterJobs = (filters) => {
     // Apply filters to the original jobs list
     let filteredList = jobs.filter((job) => {
-      // Apply filter conditions here
-      // For example, filter by min experience
+      // Filter by min experience
       if (filters.minExp && job.minExp < filters.minExp) {
         return false;
       }
       // Filter by company name
       if (
         filters.companyName &&
-        !job.companyName.toLowerCase().includes(filters.companyName.toLowerCase())
+        !job.companyName
+          .toLowerCase()
+          .includes(filters.companyName.toLowerCase())
       ) {
         return false;
       }
       // Filter by location
-      if (
-        filters.location &&
-        !job.location.toLowerCase().includes(filters.location.toLowerCase())
-      ) {
-        return false;
-      }
-      // Filter by remote status
-      if (
-        filters.remote.length > 0 &&
-        !filters.remote.includes(job.remote)
-      ) {
-        return false;
+      if (filters.remote.length > 0) {
+        // Check if both "Remote" and "On-site" are selected
+        if (
+          filters.remote.includes("remote") &&
+          filters.remote.includes("on-site")
+        ) {
+          return true; // Show all jobs
+        } else if (filters.remote.includes("remote")) {
+          // Filter remote jobs
+          if (!job.location.toLowerCase().includes("remote")) {
+            return false;
+          }
+        } else if (filters.remote.includes("on-site")) {
+          // Filter on-site jobs
+          if (job.location.toLowerCase().includes("remote")) {
+            return false;
+          }
+        }
       }
       // Filter by tech stack
       if (
         filters.techStack.length > 0 &&
-        !filters.techStack.some((stack) => job.techStack.includes(stack))
+        !filters.techStack.includes(job.techStack)
       ) {
         return false;
       }
@@ -134,7 +142,7 @@ function App() {
   return (
     <div className="App">
       <Container maxWidth="lg" className={classes.container}>
-      <Filter filterJobs={filterJobs} />
+        <Filter filterJobs={filterJobs} />
         <Grid container spacing={3}>
           {filteredJobs.map((job, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
