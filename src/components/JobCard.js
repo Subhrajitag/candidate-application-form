@@ -132,14 +132,14 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#3f51b5",
     width: "calc(100% - 16px)",
     margin: "8px",
-    height: "40px", // Adjust button height
-    color: "#fff", // Text color
-    transition: "background-color 0.3s", // Transition effect
+    height: "40px",
+    color: "#fff",
+    transition: "background-color 0.3s",
     "&:hover": {
-      backgroundColor: "#334393", // Darker color on hover
+      backgroundColor: "#334393",
     },
     "&:active": {
-      backgroundColor: "#2a377d", // Even darker color on click
+      backgroundColor: "#2a377d", 
     },
   },
 }));

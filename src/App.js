@@ -4,6 +4,7 @@ import {
   makeStyles,
   Container,
   CircularProgress,
+  Typography,
 } from "@material-ui/core";
 import "./App.css";
 import Filter from "./components/Filter";
@@ -19,6 +20,11 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     marginTop: theme.spacing(10),
+  },
+  noJobsMessage: {
+    marginTop: theme.spacing(10),
+    fontStyle: "italic",
+    color: "#666",
   },
 }));
 
@@ -143,6 +149,17 @@ function App() {
     <div className="App">
       <Container maxWidth="lg" className={classes.container}>
         <Filter filterJobs={filterJobs} />
+        {filteredJobs.length === 0 && !loading && (
+          <Typography
+            variant="h6"
+            align="center"
+            className={classes.noJobsMessage}
+          >
+            No jobs found matching the selected criteria.
+            <br />
+            Please try different filters.
+          </Typography>
+        )}
         <Grid container spacing={3}>
           {filteredJobs.map((job, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>

@@ -91,9 +91,6 @@ const Filter = ({ filterJobs }) => {
               value={filters.techStack}
               onChange={handleChange}
             >
-              <MenuItem value="">
-                <em>Select Tech Stack</em>
-              </MenuItem>
               {[
                 "HTML/CSS",
                 "JavaScript",
