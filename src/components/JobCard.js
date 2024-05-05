@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -26,6 +26,11 @@ const JobCard = ({ job }) => {
   } = job;
 
   const classes = useStyles();
+  const [expanded, setExpanded] = useState(false);
+
+  const toggleExpanded = () => {
+    setExpanded(!expanded);
+  };
 
   return (
     <Card className={classes.card}>
@@ -46,13 +51,22 @@ const JobCard = ({ job }) => {
       </div>
       <CardContent>
         <Typography variant="body1" className={classes.salary}>
-        Estimated Salary : {minJdSalary? `${minJdSalary} - ` : ""} {maxJdSalary} {salaryCurrencyCode}
+          Estimated Salary:{" "}
+          {minJdSalary && maxJdSalary
+            ? `${minJdSalary} - ${maxJdSalary} ${salaryCurrencyCode}`
+            : "Not specified"}
         </Typography>
         <Typography variant="body2" paragraph>
-          <strong>Experience Required:</strong> {minExp} - {maxExp} years
+          <strong>Experience Required:</strong>{" "}
+          {minExp && maxExp ? `${minExp} - ${maxExp} years` : "Not specified"}
         </Typography>
-        <Typography variant="body2" paragraph>
-          {jobDetailsFromCompany}
+        <Typography variant="body2" >
+          {expanded
+            ? jobDetailsFromCompany
+            : `${jobDetailsFromCompany.slice(0, 450)}...`}
+          <Button color="primary" size="small" onClick={toggleExpanded}>
+            {expanded ? "Read Less" : "Read More"}
+          </Button>
         </Typography>
       </CardContent>
       <CardActions>
@@ -62,6 +76,7 @@ const JobCard = ({ job }) => {
           component={Link}
           href={jdLink}
           target="_blank"
+          className={classes.applyButton}
         >
           Apply Now
         </Button>
@@ -93,13 +108,29 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontWeight: "bold",
+    textTransform: "capitalize",
   },
   subtitle: {
     fontStyle: "italic",
+    textTransform: "capitalize",
   },
   salary: {
     color: "#3f51b5",
     marginBottom: theme.spacing(1),
+  },
+  applyButton: {
+    backgroundColor: "#3f51b5",
+    width: "calc(100% - 16px)",
+    margin: "8px",
+    height: "40px", // Adjust button height
+    color: "#fff", // Text color
+    transition: "background-color 0.3s", // Transition effect
+    "&:hover": {
+      backgroundColor: "#334393", // Darker color on hover
+    },
+    "&:active": {
+      backgroundColor: "#2a377d", // Even darker color on click
+    },
   },
 }));
 
