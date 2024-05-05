@@ -6,6 +6,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import "./App.css";
+import Filter from "./components/Filter";
 import JobCard from "./components/JobCard";
 import InfiniteScroll from "./components/InfiniteScroll";
 
@@ -26,6 +27,7 @@ function App() {
   const [jobs, setJobs] = useState([]);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [filteredJobs, setFilteredJobs] = useState([]);
 
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -52,6 +54,7 @@ function App() {
         .then((response) => response.json())
         .then((result) => {
           setJobs((prevJobs) => [...prevJobs, ...result.jdList]);
+          setFilteredJobs((prevJobs) => [...prevJobs, ...result.jdList]); // Initialize filtered jobs with all jobs
           setLoading(false);
         })
         .catch((error) => {
@@ -74,11 +77,66 @@ function App() {
     }
   };
 
+  const filterJobs = (filters) => {
+    // Apply filters to the original jobs list
+    let filteredList = jobs.filter((job) => {
+      // Apply filter conditions here
+      // For example, filter by min experience
+      if (filters.minExp && job.minExp < filters.minExp) {
+        return false;
+      }
+      // Filter by company name
+      if (
+        filters.companyName &&
+        !job.companyName.toLowerCase().includes(filters.companyName.toLowerCase())
+      ) {
+        return false;
+      }
+      // Filter by location
+      if (
+        filters.location &&
+        !job.location.toLowerCase().includes(filters.location.toLowerCase())
+      ) {
+        return false;
+      }
+      // Filter by remote status
+      if (
+        filters.remote.length > 0 &&
+        !filters.remote.includes(job.remote)
+      ) {
+        return false;
+      }
+      // Filter by tech stack
+      if (
+        filters.techStack.length > 0 &&
+        !filters.techStack.some((stack) => job.techStack.includes(stack))
+      ) {
+        return false;
+      }
+      // Filter by job role
+      if (
+        filters.jobRole.length > 0 &&
+        !filters.jobRole.includes(job.jobRole)
+      ) {
+        return false;
+      }
+      // Filter by min JD salary
+      if (filters.minJdSalary && job.minJdSalary < filters.minJdSalary) {
+        return false;
+      }
+      return true; // Job passes all filter conditions
+    });
+
+    // Update the filtered jobs state
+    setFilteredJobs(filteredList);
+  };
+
   return (
     <div className="App">
       <Container maxWidth="lg" className={classes.container}>
+      <Filter filterJobs={filterJobs} />
         <Grid container spacing={3}>
-          {jobs.map((job, index) => (
+          {filteredJobs.map((job, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               <JobCard job={job} />
             </Grid>
