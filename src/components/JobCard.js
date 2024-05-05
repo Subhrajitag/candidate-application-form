@@ -50,17 +50,27 @@ const JobCard = ({ job }) => {
         </div>
       </div>
       <CardContent>
-        <Typography variant="body1" className={classes.salary}>
+        <Typography
+          variant="body1"
+          className={classes.salary}
+          style={{ color: "#3f51b5" }}
+        >
           Estimated Salary:{" "}
-          {minJdSalary && maxJdSalary
-            ? `${minJdSalary} - ${maxJdSalary} ${salaryCurrencyCode}`
+          {minJdSalary || maxJdSalary
+            ? `${minJdSalary ? minJdSalary : ""} ${
+                minJdSalary && maxJdSalary ? "-" : ""
+              } ${maxJdSalary || ""} ${salaryCurrencyCode}`
             : "Not specified"}
         </Typography>
         <Typography variant="body2" paragraph>
           <strong>Experience Required:</strong>{" "}
-          {minExp && maxExp ? `${minExp} - ${maxExp} years` : "Not specified"}
+          {minExp || maxExp
+            ? `${minExp ? minExp : ""} ${minExp && maxExp ? "-" : ""} ${
+                maxExp || ""
+              } years`
+            : "Not specified"}
         </Typography>
-        <Typography variant="body2" >
+        <Typography variant="body2">
           {expanded
             ? jobDetailsFromCompany
             : `${jobDetailsFromCompany.slice(0, 450)}...`}

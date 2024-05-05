@@ -3,10 +3,11 @@ import {
   Grid,
   makeStyles,
   Container,
+  CircularProgress,
 } from "@material-ui/core";
 import "./App.css";
-import Filter from "./components/Filter";
 import JobCard from "./components/JobCard";
+import InfiniteScroll from "./components/InfiniteScroll";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -24,36 +25,57 @@ function App() {
   const classes = useStyles();
   const [jobs, setJobs] = useState([]);
   const [offset, setOffset] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+
+  const raw = JSON.stringify({
+    limit: 12,
+    offset: offset,
+  });
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow",
+  };
+
+  const fetchJobs = async () => {
+    try {
+      setLoading(true);
+      await fetch(
+        "https://api.weekday.technology/adhoc/getSampleJdJSON",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          setJobs((prevJobs) => [...prevJobs, ...result.jdList]);
+          setLoading(false);
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log("error", error);
+        });
+    } catch (error) {
+      console.error("Error fetching job listings:", error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await fetch(
-          "https://api.weekday.technology/adhoc/getSampleJdJSON",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              limit: 10,
-              offset: offset,
-            }),
-          }
-        );
-        const data = await response.json();
-        setJobs((prevJobs) => [...prevJobs, ...data.jdList]);
-      } catch (error) {
-        console.error("Error fetching job listings:", error);
-      }
-    };
-
     fetchJobs();
   }, [offset]);
 
+  const loadMoreJobs = () => {
+    if (!loading) {
+      setOffset((prevOffset) => prevOffset + 10);
+    }
+  };
+
   return (
     <div className="App">
-      {/* <Filter/> */}
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
           {jobs.map((job, index) => (
@@ -63,6 +85,12 @@ function App() {
           ))}
         </Grid>
       </Container>
+      <InfiniteScroll onScroll={loadMoreJobs} />
+      {loading && (
+        <div className={classes.progress}>
+          <CircularProgress />
+        </div>
+      )}
     </div>
   );
 }
