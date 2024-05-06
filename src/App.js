@@ -13,6 +13,7 @@ import InfiniteScroll from "./components/InfiniteScroll";
 import useDebounce from "./utils/hooks/useDebounce";
 import useThrottle from "./utils/hooks/useThrottle";
 
+// Custom styles for the component
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
@@ -46,9 +47,12 @@ function App() {
     minJdSalary: "",
   });
 
+  // Debounce the filter criteria to reduce API calls
   const debouncedFilters = useDebounce(filters, 600);
+  // Throttle the offset to avoid excessive loading
   const throttledOffset = useThrottle(offset, 1000);
 
+  // Fetch job listings from API
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
@@ -88,20 +92,24 @@ function App() {
     }
   };
 
+  // Fetch initial job listings on component mount
   useEffect(() => {
     fetchJobs();
   }, [throttledOffset]);
 
+  // Update filtered jobs when filters change
   useEffect(() => {
     filterJobs(debouncedFilters);
   }, [debouncedFilters]);
 
+  // Load more jobs when scrolling
   const loadMoreJobs = () => {
     if (!loading) {
       setOffset((prevOffset) => prevOffset + 10);
     }
   };
 
+  // Filter job listings based on filter
   const filterJobs = (filters) => {
     // Apply filters to the original jobs list
     let filteredList = jobs.filter((job) => {
@@ -120,19 +128,16 @@ function App() {
       }
       // Filter by location
       if (filters.remote.length > 0) {
-        // Check if both "Remote" and "On-site" are selected
         if (
           filters.remote.includes("remote") &&
           filters.remote.includes("on-site")
         ) {
-          return true; // Show all jobs
+          return true;
         } else if (filters.remote.includes("remote")) {
-          // Filter remote jobs
           if (!job.location.toLowerCase().includes("remote")) {
             return false;
           }
         } else if (filters.remote.includes("on-site")) {
-          // Filter on-site jobs
           if (job.location.toLowerCase().includes("remote")) {
             return false;
           }
@@ -156,7 +161,8 @@ function App() {
       if (filters.minJdSalary && job.minJdSalary < filters.minJdSalary) {
         return false;
       }
-      return true; // Job passes all filter conditions
+      // Job passes all filter conditions
+      return true;
     });
 
     // Update the filtered jobs state
@@ -166,7 +172,9 @@ function App() {
   return (
     <div className="App">
       <Container maxWidth="lg" className={classes.container}>
+        {/* Filter component to apply filter criteria */}
         <Filter setFilters={setFilters} />
+        {/* Display message if no jobs found */}
         {filteredJobs.length === 0 && !loading && (
           <Typography
             variant="h6"
@@ -178,14 +186,17 @@ function App() {
             Please try different filters.
           </Typography>
         )}
+        {/* Job List */}
         <Grid container spacing={3}>
           {filteredJobs.map((job, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
+              {/* Job card component */}
               <JobCard job={job} />
             </Grid>
           ))}
         </Grid>
       </Container>
+      {/* Infinite scroll component for lazy loading */}
       <InfiniteScroll onScroll={loadMoreJobs} />
       {loading && (
         <div className={classes.progress}>

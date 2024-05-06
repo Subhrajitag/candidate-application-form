@@ -10,6 +10,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 
+// Custom styles for the component
 const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
@@ -31,6 +32,7 @@ const Filter = ({ setFilters }) => {
     minJdSalary: "",
   });
 
+  // Handle change for single value inputs
   const handleChange = (e) => {
     const { name, value } = e.target;
     setLocalFilters((prevFilters) => ({
@@ -43,6 +45,7 @@ const Filter = ({ setFilters }) => {
     }));
   };
 
+  // Handle change for multi-select inputs
   const handleMultiSelectChange = (e) => {
     const { name, value } = e.target;
     setLocalFilters((prevFilters) => ({
@@ -58,6 +61,7 @@ const Filter = ({ setFilters }) => {
   return (
     <Paper className={classes.paper}>
       <Grid container spacing={2}>
+        {/* Text field for company name */}
         <Grid item xs={12} sm={6} md={4}>
           <TextField
             label="Company Name"
@@ -67,6 +71,7 @@ const Filter = ({ setFilters }) => {
             fullWidth
           />
         </Grid>
+        {/* Text field for location */}
         <Grid item xs={12} sm={6} md={4}>
           <TextField
             label="Location"
@@ -76,6 +81,7 @@ const Filter = ({ setFilters }) => {
             fullWidth
           />
         </Grid>
+        {/* Select input for remote/on-site */}
         <Grid item xs={12} sm={6} md={4}>
           <FormControl fullWidth>
             <InputLabel id="remote-label">Remote/On-site</InputLabel>
@@ -92,6 +98,7 @@ const Filter = ({ setFilters }) => {
             </Select>
           </FormControl>
         </Grid>
+        {/* Select input for tech stack */}
         <Grid item xs={12} sm={6} md={3}>
           <FormControl fullWidth>
             <InputLabel id="tech-stack-label">Tech Stack</InputLabel>
@@ -122,6 +129,7 @@ const Filter = ({ setFilters }) => {
             </Select>
           </FormControl>
         </Grid>
+        {/* Select input for job role */}
         <Grid item xs={12} sm={6} md={3}>
           <FormControl fullWidth>
             <InputLabel id="role-label">Role</InputLabel>
@@ -143,6 +151,7 @@ const Filter = ({ setFilters }) => {
             </Select>
           </FormControl>
         </Grid>
+        {/* Select input for minimum JD salary */}
         <Grid item xs={12} sm={6} md={3}>
           <FormControl fullWidth>
             <InputLabel id="min-salary-label">Min Base Pay</InputLabel>
@@ -164,6 +173,7 @@ const Filter = ({ setFilters }) => {
             </Select>
           </FormControl>
         </Grid>
+        {/* Select input for minimum experience */}
         <Grid item xs={12} sm={6} md={3}>
           <FormControl fullWidth>
             <InputLabel id="min-exp-label">Min Experience</InputLabel>

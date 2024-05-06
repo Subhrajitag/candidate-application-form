@@ -28,12 +28,14 @@ const JobCard = ({ job }) => {
   const classes = useStyles();
   const [expanded, setExpanded] = useState(false);
 
+  // Function to toggle expanded view
   const toggleExpanded = () => {
     setExpanded(!expanded);
   };
 
   return (
     <Card className={classes.card}>
+      {/* Header section with company logo and details */}
       <div className={classes.header}>
         <Avatar alt={companyName} src={logoUrl} className={classes.avatar} />
         <div className={classes.titleContainer}>
@@ -49,6 +51,7 @@ const JobCard = ({ job }) => {
           </Typography>
         </div>
       </div>
+      {/* Job details and description */}
       <CardContent>
         <Typography
           variant="body1"
@@ -79,6 +82,7 @@ const JobCard = ({ job }) => {
           </Button>
         </Typography>
       </CardContent>
+      {/* Action section with Apply Now button */}
       <CardActions>
         <Button
           size="small"
@@ -95,6 +99,7 @@ const JobCard = ({ job }) => {
   );
 };
 
+// Custom styles for the component
 const useStyles = makeStyles((theme) => ({
   card: {
     marginBottom: theme.spacing(3),
