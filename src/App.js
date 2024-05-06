@@ -11,6 +11,7 @@ import Filter from "./components/Filter";
 import JobCard from "./components/JobCard";
 import InfiniteScroll from "./components/InfiniteScroll";
 import useDebounce from "./utils/hooks/useDebounce";
+import useThrottle from "./utils/hooks/useThrottle";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -46,13 +47,14 @@ function App() {
   });
 
   const debouncedFilters = useDebounce(filters, 600);
+  const throttledOffset = useThrottle(offset, 1000);
 
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
 
   const raw = JSON.stringify({
     limit: 12,
-    offset: offset,
+    offset: throttledOffset,
   });
 
   const requestOptions = {
@@ -88,7 +90,7 @@ function App() {
 
   useEffect(() => {
     fetchJobs();
-  }, [offset]);
+  }, [throttledOffset]);
 
   useEffect(() => {
     filterJobs(debouncedFilters);
