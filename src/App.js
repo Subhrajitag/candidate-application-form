@@ -10,6 +10,7 @@ import "./App.css";
 import Filter from "./components/Filter";
 import JobCard from "./components/JobCard";
 import InfiniteScroll from "./components/InfiniteScroll";
+import useDebounce from "./utils/hooks/useDebounce";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -34,6 +35,17 @@ function App() {
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [filteredJobs, setFilteredJobs] = useState([]);
+  const [filters, setFilters] = useState({
+    minExp: "",
+    companyName: "",
+    location: "",
+    remote: [],
+    techStack: [],
+    jobRole: [],
+    minJdSalary: "",
+  });
+
+  const debouncedFilters = useDebounce(filters, 600);
 
   const myHeaders = new Headers();
   myHeaders.append("Content-Type", "application/json");
@@ -77,6 +89,10 @@ function App() {
   useEffect(() => {
     fetchJobs();
   }, [offset]);
+
+  useEffect(() => {
+    filterJobs(debouncedFilters);
+  }, [debouncedFilters]);
 
   const loadMoreJobs = () => {
     if (!loading) {
@@ -148,7 +164,7 @@ function App() {
   return (
     <div className="App">
       <Container maxWidth="lg" className={classes.container}>
-        <Filter filterJobs={filterJobs} />
+        <Filter setFilters={setFilters} />
         {filteredJobs.length === 0 && !loading && (
           <Typography
             variant="h6"

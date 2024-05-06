@@ -17,14 +17,11 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
     borderRadius: "8px",
   },
-  role: {
-    textTransform: "capitalize",
-  },
 }));
 
-const Filter = ({ filterJobs }) => {
+const Filter = ({ setFilters }) => {
   const classes = useStyles();
-  const [filters, setFilters] = useState({
+  const [filters, setLocalFilters] = useState({
     minExp: "",
     companyName: "",
     location: "",
@@ -36,11 +33,26 @@ const Filter = ({ filterJobs }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    setLocalFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
     setFilters((prevFilters) => ({
       ...prevFilters,
       [name]: value,
     }));
-    filterJobs({ ...filters, [name]: value }); // Filter jobs immediately on change
+  };
+
+  const handleMultiSelectChange = (e) => {
+    const { name, value } = e.target;
+    setLocalFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
   };
 
   return (
@@ -73,7 +85,7 @@ const Filter = ({ filterJobs }) => {
               name="remote"
               multiple
               value={filters.remote}
-              onChange={handleChange}
+              onChange={handleMultiSelectChange}
             >
               <MenuItem value="remote">Remote</MenuItem>
               <MenuItem value="on-site">On-site</MenuItem>
@@ -89,7 +101,7 @@ const Filter = ({ filterJobs }) => {
               name="techStack"
               multiple
               value={filters.techStack}
-              onChange={handleChange}
+              onChange={handleMultiSelectChange}
             >
               {[
                 "HTML/CSS",
@@ -119,7 +131,7 @@ const Filter = ({ filterJobs }) => {
               name="jobRole"
               multiple
               value={filters.jobRole}
-              onChange={handleChange}
+              onChange={handleMultiSelectChange}
             >
               {["frontend", "backend", "ios", "android", "tech lead"].map(
                 (role) => (
@@ -141,7 +153,7 @@ const Filter = ({ filterJobs }) => {
               value={filters.minJdSalary}
               onChange={handleChange}
             >
-                 <MenuItem value="">
+              <MenuItem value="">
                 <em>Select Min Base Pay</em>
               </MenuItem>
               {[10, 20, 30, 40, 50, 60, 70, 80, 90, 100].map((num) => (
